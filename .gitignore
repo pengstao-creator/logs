@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Configuration files
+config/
+
