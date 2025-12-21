@@ -1,4 +1,4 @@
-#include "log.hpp"
+#include "../include/log.hpp"
 /*
     日志系统接口说明
 */

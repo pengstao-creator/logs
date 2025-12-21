@@ -26,7 +26,7 @@
     X(FORMAT, "log.format", "[%L][%N][{%Y-%m-%d %H:%M:%S}][%f][%l][%c]%n", String, {}, "日志格式") \
     X(FILE_TIME_FORMAT, "log.file_time_format", "%Y%m%d%H%M%S", String, {}, "文件时间格式")        \
     X(BASE_FILE_NAME, "log.BaseFileName", "../logs/log", String, {}, "基础文件名")                 \
-    X(BOUND_SYMBOL, "log.BoundSymbol", "_", Char, {}, "文件名连接符")                                   \
+    X(BOUND_SYMBOL, "log.BoundSymbol", "_", Char, {}, "文件名连接符")                              \
     X(FILE_EXTENSION, "log.file_extension", ".txt", String, {}, "文件扩展名")                      \
     X(LOG_FILE_NAME, "log.logFileName", "", String, {}, "日志文件名")                              \
     X(FILE_SERIAL, "log.file_serial", "0", SizeT, {}, "文件序号")                                  \
@@ -35,9 +35,7 @@
     X(THREAD_COUNT, "log.threadCount", "5", SizeT, {}, "线程数")                                   \
     X(DLOGGER_TYPE, "log.DLoggerType", "ASYNLOGGER", String, {}, "默认日志记录器类型")             \
     X(DANSY_CTRL_TYPE, "log.DAnsyCtrlType", "COMMON", String, {}, "默认异步控制类型")              \
-    X(DLEVEL, "log.DLevel", "DEBUG", String, {}, "默认日志级别")                                   \
-    X(LOG_FILE_ENCODING, "log.file_encoding", "UTF-8", String, {}, "日志文件编码")                 \
-    X(LOG_ROTATION_ENABLED, "log.rotation_enabled", "true", Bool, {}, "启用日志轮转")              \
+    X(DLEVEL, "log.DLevel", "DEBUG", String, {}, "默认日志级别")
 
 // 声明配置项的宏：展开为枚举值
 #define DECLARE_CONFIG_ENUM(Name, Key, DefaultValue, Type, Validator, Description) Name,
@@ -292,38 +290,9 @@ namespace Log
         // 自动生成所有配置项的getter方法
         GENERATE_GETTERS()
 
-     
         bool isLoaded() const { return _loaded; }
-        void writeLogFileConfig(const size_t num, const size_t filesize, const std::string &name)
-        {
-
-            std::ofstream file;
-            std::stringstream ss;
-            writeDefaultConfig(ss);
-            _writeLogFileConfig(ss, num, filesize, name);
-            std::unique_lock<std::mutex> lock(_mutex);
-            if (!openfile(PropertiesName, file))
-            {
-                file.open(PropertiesName, std::ofstream::ate);
-            }
-            file << ss.str();
-            file.close();
-        }
-
+       
     private:
-        void _writeLogFileConfig(std::ostream &out, const size_t num, const size_t filesize, const std::string &name)
-        {
-            out << "# 不为修改项\n";
-            out << "# 日志文件名字\n";
-            out << "log.logFileName=" << name << "\n\n";
-
-            out << "# 日志文件编号\n";
-            out << "log.file_serial=" << std::to_string(num) << "\n\n";
-
-            out << "# 日志文件大小(字节)\n";
-            out << "log.logFileSize=" << std::to_string(filesize) << "\n\n";
-        }
-
         void setDefaultConfig()
         {
             // 使用集中管理的配置项设置默认值
@@ -359,9 +328,9 @@ namespace Log
 
         bool openfile(const std::string &filename, std::ofstream &file)
         {
-            if (!tool::Flie::FileisExist(filename))
+            if (!tool::File::FileisExist(filename))
             {
-                tool::Flie::createFilePath(tool::Flie::GetFilepath(filename));
+                tool::File::createFilePath(tool::File::GetFilepath(filename));
             }
             file.open(filename, std::ofstream::ate);
             if (!file.is_open())

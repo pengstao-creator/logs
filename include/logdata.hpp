@@ -101,23 +101,21 @@ namespace Log
 
 // 使用宏自动生成简单的配置项getter方法
 // 定义所有简单的配置项
-#define DATA_CONFIG_ITEMS(X)                                \
-    X(const char *, defaultTF, TIME_FORMAT)                 \
-    X(const size_t, size, BUFFER_SIZE)                      \
-    X(const size_t, max_logfile_size, MAX_LOGFILE_SIZE)     \
-    X(const size_t, max_buffer_size, MAX_BUFFER_SIZE)       \
-    X(const char *, defaultformat, FORMAT)                  \
-    X(const char *, defaultFileTF, FILE_TIME_FORMAT)        \
-    X(const char *, defaultBFile, BASE_FILE_NAME)           \
-    X(const char *, defaultFix, FILE_EXTENSION)             \
-    X(const char, BoundSymbol, BOUND_SYMBOL)                \
-    X(const char *, LogFileName, LOG_FILE_NAME)             \
-    X(const size_t, LogFileSerial, FILE_SERIAL)             \
-    X(const size_t, LogFileSize, LOG_FILE_SIZE)             \
-    X(const size_t, MaxFileSerial, MAX_FILE_SERIAL)         \
-    X(const size_t, threadCount, THREAD_COUNT)               \
-    X(const char *, defaultFileEncoding, LOG_FILE_ENCODING) \
-    X(const bool, logRotationEnabled, LOG_ROTATION_ENABLED) \
+#define DATA_CONFIG_ITEMS(X)                            \
+    X(const char *, defaultTF, TIME_FORMAT)             \
+    X(const size_t, size, BUFFER_SIZE)                  \
+    X(const size_t, max_logfile_size, MAX_LOGFILE_SIZE) \
+    X(const size_t, max_buffer_size, MAX_BUFFER_SIZE)   \
+    X(const char *, defaultformat, FORMAT)              \
+    X(const char *, defaultFileTF, FILE_TIME_FORMAT)    \
+    X(const char *, defaultBFile, BASE_FILE_NAME)       \
+    X(const char *, defaultFix, FILE_EXTENSION)         \
+    X(const char, BoundSymbol, BOUND_SYMBOL)            \
+    X(const char *, LogFileName, LOG_FILE_NAME)         \
+    X(const size_t, LogFileSerial, FILE_SERIAL)         \
+    X(const size_t, LogFileSize, LOG_FILE_SIZE)         \
+    X(const size_t, MaxFileSerial, MAX_FILE_SERIAL)     \
+    X(const size_t, threadCount, THREAD_COUNT)
 
 // 生成简单getter方法的宏
 #define GENERATE_SIMPLE_GETTER(ReturnType, MethodName, ConfigName) \

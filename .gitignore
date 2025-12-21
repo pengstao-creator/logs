@@ -33,4 +33,6 @@
 
 # Configuration files
 config/
+bin/
+build/
 

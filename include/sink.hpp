@@ -1,7 +1,6 @@
 #pragma once
 #include "logdata.hpp"
 #include "tool.hpp"
-#include "logmessage.hpp"
 #include <memory>
 #include <fstream>
 #include <atomic>
@@ -15,20 +14,14 @@ namespace Log
     class Sink
     {
     public:
+        Sink()
+        {
+        }
         typedef std::shared_ptr<Sink> ptr;
         virtual ~Sink()
         {
-            if (num)
-            {
-                logmessage::getInstance().addlogmessage(num, size, filename);
-            }
         }
         virtual void WriteFile(const std::string &) = 0;
-        virtual bool isroll() = 0;
-        // 记录终止时日志文件的状态用于写入配置文件
-        std::atomic<size_t> num;
-        size_t size;
-        std::string filename;
     };
     namespace SinkWay
     {
@@ -39,10 +32,6 @@ namespace Log
             {
                 std::cout << str;
             }
-            bool isroll() override
-            {
-                return false;
-            }
         };
         class FiletSink : public Sink
         {
@@ -50,7 +39,7 @@ namespace Log
             FiletSink(const std::string &filepath)
                 : _filepath(filepath)
             {
-                tool::Flie::createFilePath(tool::Flie::GetFilepath(filepath));
+                tool::File::createFilePath(tool::File::GetFilepath(filepath));
                 _ofs.open(_filepath, std::ofstream::ate | std::ofstream::app);
                 if (!_ofs.good())
                 {
@@ -67,10 +56,6 @@ namespace Log
             {
                 _ofs.write(str.c_str(), str.size());
             }
-            bool isroll() override
-            {
-                return false;
-            }
 
         private:
             std::string _filepath;
@@ -81,33 +66,41 @@ namespace Log
         {
         public:
             RollFileSink(size_t maxsize = Data::max_logfile_size(), const std::string &basefile = Data::defaultBFile())
-                : _pfile(false), _size(0), _num(1), _maxsize(maxsize), _basefile(basefile)
+                : _size(0), _num(1), _maxsize(maxsize), _basefile(basefile)
             {
                 if (_basefile.empty() || _basefile == Data::defaultBFile())
                 {
-                    Init();
-                    if (istruep() && tool::Flie::FileisExist(_filepath))
+                    // 搜索默认日志目录下的最新文件进行写入
+                    Init(); // 初始化查找最新文件
+                }
+                if (_filepath.empty())
+                {
+                    tool::File::createFilePath(tool::File::GetFilepath(_basefile));
+                    openNewFile();
+                }
+                else
+                {
+                    // 检查最新文件大小是否超过默认大小
+                    if (_size >= _maxsize)
                     {
-                        _pfile = true;
+                        // 如果超过则创建新文件
                         openNewFile();
                     }
                     else
                     {
-                        _basefile = Data::defaultBFile();
-                        _num = 1;
+                        // 否则直接打开最新文件
+                        std::unique_lock<std::mutex> lock(_mutex);
+                        _ofs.open(_filepath, std::ofstream::ate | std::ofstream::app);
+                        if (!_ofs.good())
+                        {
+                            std::cout << "RollFileSink 文件打开失败，创建新文件" << std::endl;
+                            openNewFile();
+                        }
                     }
-                }
-                if (!_pfile)
-                {
-                    tool::Flie::createFilePath(tool::Flie::GetFilepath(_basefile));
-                    openNewFile();
                 }
             }
             ~RollFileSink() override
             {
-                num = _num - 1;
-                size = _size;
-                filename = _filepath;
             }
             void WriteFile(const std::string &str) override
             {
@@ -122,30 +115,30 @@ namespace Log
                     Write(str);
                 }
             }
-            bool isroll() override
-            {
-                return true;
-            }
-            const size_t getnum() const { return _num; }
-            const size_t getsize() const { return _size; }
-            const std::string &getlogfilename() const { return _filepath; }
 
         private:
             void Init()
             {
-                // 从读取配置文件
-                _size = Data::LogFileSize();
-                _num = Data::LogFileSerial();
-                _filepath = Data::LogFileName();
-            }
-            // 初步判断是否是正确配置
-            bool istruep()
-            {
-                if ((_num <= Data::MaxFileSerial() && _num > 0) && (_size <= _maxsize) && !_filepath.empty())
+                // 默认路径下查找最新的日志文件
+                _num = 1;
+                _size = 0;
+                _filepath.clear();
+
+                // 获取默认基础文件名和目录
+                std::string baseFile = Data::defaultBFile();
+                std::string baseDir = tool::File::GetFilepath(baseFile);
+                std::string baseName = baseFile.substr(baseDir.size());
+
+                // 调用跨平台的文件查找方法
+                std::string latestFile = tool::File::FindLatestLogFile(baseDir, baseName, Data::defaultFix(), _num, _size);
+                
+                // 如果找到最新文件，设置文件路径
+                if (!latestFile.empty())
                 {
-                    return true;
+                    _filepath = latestFile;
+                    // 将找到的最新文件编号作为当前编号
+                    // _num已经被FindLatestLogFile()设置为最新的文件编号
                 }
-                return false;
             }
 
             void Write(const std::string &str)
@@ -165,11 +158,8 @@ namespace Log
                 {
                     _ofs.close();
                 }
-                if (!_pfile || _size > _maxsize)
-                {
-                    _size = 0;
-                    createFilepath();
-                }
+                _size = 0;
+                createFilepath();
                 std::unique_lock<std::mutex> lock(_mutex);
                 _ofs.open(_filepath, std::ofstream::ate | std::ofstream::app);
                 if (!_ofs.good())
@@ -198,7 +188,6 @@ namespace Log
             }
 
         private:
-            std::atomic<bool> _pfile; // 打开配文件中的文件
             std::atomic<size_t> _maxsize;
             std::atomic<size_t> _size;
             std::atomic<size_t> _num;
