@@ -65,8 +65,8 @@ void test2()
 
     // 全局日志对象将会管理在Log::LogGer::SingleManage中,其中提供两个默认全局日志器
     // 同步与异步,同名日志对象不会被重复创建
-    auto global1 = Log::LogGer::SingleManage::getInstance().getLoger(Log::Data::ASYN);  // 默认全局异步日志器
-    auto globals1 = Log::LogGer::SingleManage::getInstance().getLoger(Log::Data::SYNC); // 默认全局同步日志器
+    auto global1 = Log::LogGer::SingleManage::getInstance().getLoger(Log::Data::ASYN);  // 默认全局异步日志器,向滚动文件写入
+    auto globals1 = Log::LogGer::SingleManage::getInstance().getLoger(Log::Data::SYNC); // 默认全局同步日志器,向屏幕写入
 
     auto global2 = mylog::DefaultAsynLogger();
     auto globals2 = mylog::DefaultSyncLogger();

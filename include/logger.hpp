@@ -245,6 +245,10 @@ namespace Log
             {
                 _vsptr = vsptr;
             }
+            void InitSinkWay(Sink::ptr sptr)
+            {
+                _vsptr.push_back(sptr);
+            }
             void InitFormat(const std::string &format)
             {
                 _fptr = std::make_shared<Formatctrl>(format);
@@ -383,6 +387,8 @@ namespace Log
                 else
                 {
                     LogGer::LoggerBuilder::ptr bp = std::make_shared<LogGer::LocalLogder>();
+                    //同步日志器默认向屏幕打印
+                    bp->InitSinkWay(SinkFactory::StdoutSink());
                     lg = returnLogger(bp, Data::LogGerType::SYNCLOGGER, Data::DLevel(), Data::SYNC);
                 }
                 addLogger(lg);
@@ -399,9 +405,7 @@ namespace Log
                 bp->InitACType(type);
                 bp->InitLoggerType(loggertype);
                 bp->InitLoggername(loggername);
-                bp->InitSinkWay(LogGer::Logger::VSPtr());
                 bp->InitFormat(format);
-                bp->InitAnsyCtrlWay(ACtrl::AnsyCtrl::ptr());
                 return bp->InitLB();
             }
 

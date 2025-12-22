@@ -34,7 +34,6 @@ logs/
 │   ├── logdata.hpp      # Log data structures
 │   ├── logger.hpp       # Logger core
 │   ├── log.hpp          # Main header (user interface)
-│   ├── logmessage.hpp   # Log message
 │   ├── message.hpp      # Message handling
 │   ├── sink.hpp         # Log sinks
 │   ├── threadpool.hpp   # Thread pool

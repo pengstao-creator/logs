@@ -34,7 +34,6 @@ logs/
 │   ├── logdata.hpp      # 日志数据结构
 │   ├── logger.hpp       # 日志器核心
 │   ├── log.hpp          # 主头文件（用户接口）
-│   ├── logmessage.hpp   # 日志消息
 │   ├── message.hpp      # 消息处理
 │   ├── sink.hpp         # 日志输出目标
 │   ├── threadpool.hpp   # 线程池

@@ -131,7 +131,7 @@ namespace Log
 
                 // 调用跨平台的文件查找方法
                 std::string latestFile = tool::File::FindLatestLogFile(baseDir, baseName, Data::defaultFix(), _num, _size);
-                
+
                 // 如果找到最新文件，设置文件路径
                 if (!latestFile.empty())
                 {
@@ -143,12 +143,24 @@ namespace Log
 
             void Write(const std::string &str)
             {
+
                 size_t size = _size - _maxsize;
-                size_t len = str.size() - size;
-                _ofs.write(str.c_str(), len);
-                openNewFile();
-                std::string s = str.substr(len);
-                WriteFile(s);
+                if (size < Data::Exceed_size())
+                {
+                    //将包含超过部分写入当前文件
+                    _ofs.write(str.c_str(), str.size());
+                    openNewFile();
+                }
+                else
+                {
+                    
+                    size_t len = str.size() - size;
+                    _ofs.write(str.c_str(), len);
+                    //将超过部分写入新文件
+                    openNewFile();
+                    std::string s = str.substr(len);
+                    WriteFile(s);
+                }
             }
 
             void openNewFile()
@@ -175,10 +187,10 @@ namespace Log
                 std::string str = Data::GetFormatTime(tool::Date::GetTime(), Data::defaultFileTF());
                 if (!str.empty())
                 {
+                    _num++;
                     _filepath = _basefile + std::to_string(_num) + Data::BoundSymbol() + str + Data::defaultFix();
                     if (_num >= Data::MaxFileSerial())
                         _num = 0;
-                    _num++;
                 }
                 else
                 {
