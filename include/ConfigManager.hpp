@@ -18,20 +18,20 @@
 
 // X-Macro技术：用于自动添加新配置项
 // 用户只需在CONFIG_ITEMS列表中添加一行即可完成新配置项的添加
-#define CONFIG_ITEMS(X)                                                                              \
-    X(TIME_FORMAT, "log.time_format", "%Y-%m-%d %H:%M:%S", String, {}, "时间格式")                   \
-    X(MAX_LOGFILE_SIZE, "log.max_logfile_size", "10*1024*1024", SizeT, {}, "最大日志文件大小(字节)") \
-    X(EXCEED_SIZE, "log.Exceed_size", "1024", SizeT, {}, "日志文件大小可超过阈值的大小(字节)")       \
-    X(MAX_BUFFER_SIZE, "log.max_buffer_size", "5*1024*1024", SizeT, {}, "最大缓冲区大小(字节)")      \
-    X(FORMAT, "log.format", "[%L][%N][{%Y-%m-%d %H:%M:%S}][%f][%l][%c]%n", String, {}, "日志格式")   \
-    X(FILE_TIME_FORMAT, "log.file_time_format", "%Y%m%d%H%M%S", String, {}, "文件时间格式")          \
-    X(BASE_FILE_NAME, "log.BaseFileName", "../logs/log", String, {}, "基础文件名")                   \
-    X(BOUND_SYMBOL, "log.BoundSymbol", "_", Char, {}, "文件名连接符")                                \
-    X(FILE_EXTENSION, "log.file_extension", ".txt", String, {}, "文件扩展名")                        \
-    X(MAX_FILE_SERIAL, "log.MaxFileSerial", "50", SizeT, {}, "最大文件序号")                         \
-    X(THREAD_COUNT, "log.threadCount", "5", SizeT, {}, "线程数")                                     \
-    X(DLOGGER_TYPE, "log.DLoggerType", "ASYNLOGGER", String, {}, "默认日志记录器类型")               \
-    X(DANSY_CTRL_TYPE, "log.DAnsyCtrlType", "COMMON", String, {}, "默认异步控制类型")                \
+#define CONFIG_ITEMS(X)                                                                             \
+    X(TIME_FORMAT, "log.time_format", "%Y-%m-%d %H:%M:%S", String, {}, "时间格式")                  \
+    X(MAX_LOGFILE_SIZE, "log.max_logfile_size", "10485760", SizeT, {}, "最大日志文件大小(字节)")    \
+    X(EXCEED_SIZE, "log.Exceed_size", "1024", SizeT, {}, "日志文件大小可超过阈值的大小(字节)")      \
+    X(MAX_BUFFER_SIZE, "log.max_buffer_size", "1048567", SizeT, {}, "最大缓冲区大小(字节)")         \
+    X(FORMAT, "log.format", "[%L][%N][{%Y-%m-%d %H:%M:%S}][%f][%l][%c]%n", String, {}, "日志格式")  \
+    X(FILE_TIME_FORMAT, "log.file_time_format", "%Y%m%d%H%M%S", String, {}, "文件时间格式")         \
+    X(BASE_FILE_NAME, "log.BaseFileName", "../logs/log", String, {}, "基础文件名")                  \
+    X(BOUND_SYMBOL, "log.BoundSymbol", "_", Char, {}, "文件名连接符")                               \
+    X(FILE_EXTENSION, "log.file_extension", ".txt", String, {}, "文件扩展名")                       \
+    X(MAX_FILE_SERIAL, "log.MaxFileSerial", "50", SizeT, {}, "最大文件序号")                        \
+    X(THREAD_COUNT, "log.threadCount", "5", SizeT, {}, "线程数")                                    \
+    X(DLOGGER_TYPE, "log.DLoggerType", "ASYNLOGGER", String, {}, "默认日志记录器类型")              \
+    X(DANSY_CTRL_TYPE, "log.DAnsyCtrlType", "COMMON", String, {}, "默认异步控制类型 COMMON/THPOOL") \
     X(DLEVEL, "log.DLevel", "DEBUG", String, {}, "默认日志级别")
 
 // 声明配置项的宏：展开为枚举值

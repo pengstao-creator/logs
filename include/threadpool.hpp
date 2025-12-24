@@ -146,6 +146,7 @@ public:
         if (!_threadPool)
         {
             _threadPool = std::make_unique<threadPool>(threadCount);
+            
             initialized = true;
         }
     }

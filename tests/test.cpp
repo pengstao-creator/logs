@@ -9,7 +9,7 @@ void test1()
     Log::Director d;               // 指挥者
     auto locala = d.LocalLogder(); // 默认局部异步日志器
     // locala->Debug(__LINE__, __FILE__, "这是一个默认局部异步日志器");
-
+    locala->Info(__LINE__, __FILE__, "这是一个默认局部异步日志器 {} {} {}","支持任意类型",123,std::string("我是字符串"));
     auto locals = d.LocalLogder(
         "局部同步日志器",                  // 日志器名称
         Log::Data::LogGerType::SYNCLOGGER, // 日志器类型,同步/异步

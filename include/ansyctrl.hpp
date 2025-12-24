@@ -108,9 +108,7 @@ namespace Log
             }
             ~AnsyCtrlThpool() override
             {
-                // 析构函数中不做复杂操作，只标记停止
-                std::unique_lock<std::mutex> lock(_mutex);
-                _stop = true;
+                stop();
             }
             void stop() override
             {
@@ -149,6 +147,7 @@ namespace Log
                                                        { self->HandleBuffer(); });
                 }
             }
+
             void bindcallbackf(const CallbackF &cf)
             {
                 _callbackf = cf;
@@ -157,11 +156,11 @@ namespace Log
         private:
             void HandleBuffer() override
             {
-                // 这个方法现在不再直接调用，而是通过线程池中的任务来执行
+
                 // 保留这个方法是为了兼容基类接口
                 {
                     std::unique_lock<std::mutex> lock(_mutex);
-                    if (_por_buf.empty() || _stop)
+                    if (_por_buf.empty())
                         return;
                     _con_buf.clear();
                     _por_buf.swap(_con_buf);
@@ -171,6 +170,7 @@ namespace Log
                 {
                     _callbackf(_con_buf.ReadBuffer());
                 }
+               
             }
         };
 

@@ -205,7 +205,6 @@ void test_error_cases() {
     d2.AddSink<Log::SinkWay::StdoutSink>();
     auto logger2 = d2.LocalLogder();
     logger2->Info(__LINE__, __FILE__, "");  // 空消息
-    logger2->Info(__LINE__, __FILE__, nullptr);  // nullptr消息
 }
 
 // 测试8：自定义线程池

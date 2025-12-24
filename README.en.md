@@ -13,6 +13,7 @@ A high-performance, flexible, and easy-to-use C++ logging system that supports b
 - **Multiple Sinks**: Log to stdout, files, or rolling files
 - **Thread Pool Support**: Asynchronous logging with thread pool for high performance
 - **Logger Management**: Global and local logger instances
+- **Curly Brace Placeholder Support**: Use `{}` as universal placeholders that support any type of parameters and handle parameter count mismatches gracefully
 
 ### Advanced Features
 - **Log Level Filtering**: Only log messages above a specified level
@@ -35,6 +36,7 @@ logs/
 │   ├── logger.hpp       # Logger core
 │   ├── log.hpp          # Main header (user interface)
 │   ├── message.hpp      # Message handling
+│   ├── ParseFormat.hpp  # Format parser 
 │   ├── sink.hpp         # Log sinks
 │   ├── threadpool.hpp   # Thread pool
 │   └── tool.hpp         # Utility functions
@@ -119,7 +121,7 @@ int main() {
     );
     
     custom_logger->Debug(__LINE__, __FILE__, "Custom logger debug message");
-    custom_logger->Info(__LINE__, __FILE__, "Custom logger info message with number: %d", 42);
+    custom_logger->Info(__LINE__, __FILE__, "Custom logger info message with number: {}", 42);
     
     return 0;
 }
@@ -186,6 +188,7 @@ int main() {
 | `%d`   | Current date |
 | `%T`   | Current time |
 | `{%Y-%m-%d %H:%M:%S}` | Custom date/time format (strftime style) |
+| `{}`   | Universal type placeholder, automatically matches subsequent parameters (supports integers, strings, floats, etc.) |
 
 ### Example Formats
 
@@ -226,11 +229,13 @@ The project includes comprehensive test cases covering:
 - Format strings
 - Logger management
 
+
 To run the tests:
 
 ```bash
 cd build
 ./tests/testlog
+
 ```
 
 ## Examples
@@ -245,7 +250,7 @@ int main() {
     INFO_A("Application started");
     
     int result = 42;
-    INFO_A("Computation result: %d", result);
+    INFO_A("Computation result: {}", result);
     
     WARNING_A("Low memory warning");
     
@@ -264,7 +269,7 @@ int main() {
 
 void worker(int id, Log::LogGer::Logger::ptr logger) {
     for (int i = 0; i < 10; ++i) {
-        logger->Info(__LINE__, __FILE__, "Thread %d: Message %d", id, i);
+        logger->Info(__LINE__, __FILE__, "Thread {}: Message {}", id, i);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }

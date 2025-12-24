@@ -13,6 +13,7 @@
 - **多种输出目标**：日志可输出到标准输出、文件或滚动文件
 - **线程池支持**：异步日志使用线程池提高性能
 - **日志器管理**：支持全局和局部日志器实例
+- **大括号占位符支持**：使用 `{}` 作为万能占位符，支持任意类型参数和参数数量不匹配的情况
 
 ### 高级特性
 - **日志级别过滤**：仅记录指定级别及以上的日志消息
@@ -35,6 +36,7 @@ logs/
 │   ├── logger.hpp       # 日志器核心
 │   ├── log.hpp          # 主头文件（用户接口）
 │   ├── message.hpp      # 消息处理
+│   ├── ParseFormat.hpp  # 格式解析器
 │   ├── sink.hpp         # 日志输出目标
 │   ├── threadpool.hpp   # 线程池
 │   └── tool.hpp         # 工具函数
@@ -119,7 +121,7 @@ int main() {
     );
     
     custom_logger->Debug(__LINE__, __FILE__, "自定义日志器调试信息");
-    custom_logger->Info(__LINE__, __FILE__, "自定义日志器信息，包含数字: %d", 42);
+    custom_logger->Info(__LINE__, __FILE__, "自定义日志器信息，包含数字: {}", 42);
     
     return 0;
 }
@@ -186,6 +188,7 @@ int main() {
 | `%d`   | 当前日期 |
 | `%T`   | 当前时间 |
 | `{%Y-%m-%d %H:%M:%S}` | 自定义日期/时间格式（strftime风格） |
+| `{}`   | 万能类型占位符，自动匹配后续参数（支持整数、字符串、浮点数等） |
 
 ### 格式示例
 
@@ -226,11 +229,13 @@ int main() {
 - 格式字符串
 - 日志器管理
 
+
 运行测试：
 
 ```bash
 cd build
 ./tests/testlog
+
 ```
 
 ## 示例代码
@@ -245,7 +250,7 @@ int main() {
     INFO_A("应用程序启动");
     
     int result = 42;
-    INFO_A("计算结果: %d", result);
+    INFO_A("计算结果: {}", result);
     
     WARNING_A("内存不足警告");
     
@@ -264,7 +269,7 @@ int main() {
 
 void worker(int id, Log::LogGer::Logger::ptr logger) {
     for (int i = 0; i < 10; ++i) {
-        logger->Info(__LINE__, __FILE__, "线程%d: 消息%d", id, i);
+        logger->Info(__LINE__, __FILE__, "线程{}: 消息{}", id, i);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
