@@ -55,7 +55,7 @@ logs/
 ## Installation
 
 ### Prerequisites
-- C++14 or higher
+- C++11 or higher
 - CMake (optional, for building)
 - Git
 
