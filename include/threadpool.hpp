@@ -36,12 +36,7 @@ public:
                         task = std::move(this->tasks.front());
                         this->tasks.pop();
                     }
-                    
-                    try {
-                        task();
-                    } catch (...) {
-                        // 异常处理：可以记录到日志
-                    }
+                        if(task)task();          
                 } });
         }
     }
@@ -169,13 +164,9 @@ public:
         if (!_threadPool)
         {
             // 如果线程池不存在，直接执行任务避免丢失数据
-            try {
-                // 使用bind和直接调用代替std::invoke（C++14兼容）
-                auto task = std::bind(std::forward<F>(f), std::forward<Args>(args)...);
-                task();
-            } catch (...) {
-                // 忽略异常
-            }
+            // 使用bind和直接调用代替std::invoke（C++14兼容）
+            auto task = std::bind(std::forward<F>(f), std::forward<Args>(args)...);
+            if(task) task();
             return;
         }
         _threadPool->addLogTask(std::forward<F>(f), std::forward<Args>(args)...);

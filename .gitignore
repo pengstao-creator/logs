@@ -36,3 +36,9 @@ config/
 bin/
 build/
 
+# IDE directories
+.vscode/
+
+# Log files
+logs/
+

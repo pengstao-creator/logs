@@ -137,7 +137,6 @@ namespace Log
                 {
                     _filepath = latestFile;
                     // 将找到的最新文件编号作为当前编号
-                    // _num已经被FindLatestLogFile()设置为最新的文件编号
                 }
             }
 
