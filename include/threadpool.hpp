@@ -36,7 +36,7 @@ public:
                         task = std::move(this->tasks.front());
                         this->tasks.pop();
                     }
-                        if(task)task();          
+                        task();          
                 } });
         }
     }
@@ -140,7 +140,7 @@ public:
         std::lock_guard<std::mutex> lock(_initMutex);
         if (!_threadPool)
         {
-            _threadPool = std::make_unique<threadPool>(threadCount);
+            _threadPool = std::make_shared<threadPool>(threadCount);
             
             initialized = true;
         }
@@ -164,10 +164,10 @@ public:
         if (!_threadPool)
         {
             // 如果线程池不存在，直接执行任务避免丢失数据
-            // 使用bind和直接调用代替std::invoke（C++14兼容）
-            auto task = std::bind(std::forward<F>(f), std::forward<Args>(args)...);
-            if(task) task();
-            return;
+        // 使用bind和直接调用代替std::invoke（C++14兼容）
+        auto task = std::bind(std::forward<F>(f), std::forward<Args>(args)...);
+        task(); // 直接执行任务，无需条件判断
+        return;
         }
         _threadPool->addLogTask(std::forward<F>(f), std::forward<Args>(args)...);
     }
@@ -230,7 +230,7 @@ private:
         shutdown();
     }
 
-    std::unique_ptr<threadPool> _threadPool;
+    std::shared_ptr<threadPool> _threadPool;
     std::mutex _initMutex;
     bool initialized = false;
 };
