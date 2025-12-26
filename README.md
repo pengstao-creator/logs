@@ -40,10 +40,20 @@ logs/
 │   ├── sink.hpp         # 日志输出目标
 │   ├── threadpool.hpp   # 线程池
 │   └── tool.hpp         # 工具函数
+├── src/                 # 源文件目录
+│   ├── ansyctrl.cpp     # 异步控制实现
+│   ├── buffer.cpp       # 缓冲区管理实现
+│   ├── ConfigManager.cpp # 配置管理实现
+│   ├── format.cpp       # 日志格式化实现
+│   ├── logger.cpp       # 日志器核心实现
+│   ├── sink.cpp         # 日志输出目标实现
+│   ├── threadpool.cpp   # 线程池实现
+│   └── tool.cpp         # 工具函数实现
 ├── tests/               # 测试文件目录
 │   ├── test.cpp         # 基本测试
 │   └── testlog.cpp      # 综合测试
-├── bin/                 # 构建输出目录
+├── bin/                 # 可执行文件输出目录
+├── lib/                 # 动态库输出目录
 ├── build/               # 构建系统文件
 ├── config/              # 配置文件目录
 ├── logs/                # 默认日志输出目录

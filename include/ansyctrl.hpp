@@ -47,52 +47,14 @@ namespace Log
         {
 
         public:
-            AnsyCtrlCommon()
-                : _th(std::bind(&AnsyCtrlCommon::HandleBuffer, this))
-            {
-            }
-            ~AnsyCtrlCommon() { stop(); }
-            void stop() override
-            {
-                {
-                    std::unique_lock<std::mutex> lock(_mutex);
-                    _stop = true;
-                }
-                _con.notify_all();
-                if (_th.joinable())
-                    _th.join();
-            }
-            void push(const std::string &str) override
-            {
-                std::unique_lock<std::mutex> lock(_mutex);
-                _por.wait(lock, [&]()
-                          { return !_stop && str.size() <= _por_buf.WriteBSize(); });
-                _por_buf.push(str);
-                _con.notify_all();
-            }
-            void bindcallbackf(const CallbackF &cf)
-            {
-                _callbackf = cf;
-            }
+            AnsyCtrlCommon();
+            ~AnsyCtrlCommon() override { stop(); }
+            void stop() override;
+            void push(const std::string &str) override;
+            void bindcallbackf(const CallbackF &cf);
 
         private:
-            void HandleBuffer() override
-            {
-                while (true)
-                {
-                    {
-                        std::unique_lock<std::mutex> lock(_mutex);
-                        _con.wait(lock, [&]()
-                                  { return !_por_buf.empty() || _stop; });
-                        if (_stop && _por_buf.empty())
-                            break;
-                        _con_buf.clear();
-                        _por_buf.swap(_con_buf);
-                        _por.notify_all();
-                    }
-                    _callbackf(_con_buf.ReadBuffer());
-                }
-            }
+            void HandleBuffer() override;
 
         private:
             std::thread _th;
@@ -103,75 +65,14 @@ namespace Log
         class AnsyCtrlThpool : public AnsyCtrl, public std::enable_shared_from_this<AnsyCtrlThpool>
         {
         public:
-            AnsyCtrlThpool()
-            {
-            }
-            ~AnsyCtrlThpool() override
-            {
-                stop();
-            }
-            void stop() override
-            {
-                {
-                    std::unique_lock<std::mutex> lock(_mutex);
-                    if (_stop)
-                        return;
-                    _stop = true;
-                }
-
-                // 处理剩余的缓冲区内容
-                if (!_por_buf.empty())
-                {
-                    // 使用局部变量保存回调函数和缓冲区内容
-                    HandleBuffer();
-                }
-            }
-            void push(const std::string &str) override
-            {
-                std::unique_lock<std::mutex> lock(_mutex);
-                if (_stop || str.size() > _por_buf.WriteBSize())
-                    return;
-
-                _por_buf.push(str);
-
-                // 当缓冲区达到一定大小后，使用线程池处理
-                // 这里设置一个简单的阈值：当剩余空间小于1024字节时处理
-                if (_por_buf.WriteBSize() < 1024)
-                {
-                    // 创建一个共享指针副本，避免对象被销毁
-                    auto self = shared_from_this();
-                    lock.unlock();
-
-                    // 使用全局线程池处理缓冲区
-                    GlobalTPool::getInstance().enqueue([self]()
-                                                       { self->HandleBuffer(); });
-                }
-            }
-
-            void bindcallbackf(const CallbackF &cf)
-            {
-                _callbackf = cf;
-            }
+            AnsyCtrlThpool();
+            ~AnsyCtrlThpool() override { stop(); }
+            void stop() override;
+            void push(const std::string &str) override;
+            void bindcallbackf(const CallbackF &cf);
 
         private:
-            void HandleBuffer() override
-            {
-
-                // 保留这个方法是为了兼容基类接口
-                {
-                    std::unique_lock<std::mutex> lock(_mutex);
-                    if (_por_buf.empty())
-                        return;
-                    _con_buf.clear();
-                    _por_buf.swap(_con_buf);
-                }
-
-                if (_callbackf)
-                {
-                    _callbackf(_con_buf.ReadBuffer());
-                }
-               
-            }
+            void HandleBuffer() override;
         };
 
     } // neamspace ACtrl
