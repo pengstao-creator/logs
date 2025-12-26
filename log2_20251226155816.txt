@@ -1,0 +1,3 @@
+[INFO][自定义格式日志器_SYNCLOGGER][2025-12-26 15:58:16][/home/ubuntu/logs/tests/testlog.cpp][30][自定义格式测试]
+[WARNING][警告级别日志器_SYNCLOGGER][2025-12-26 15:58:16][/home/ubuntu/logs/tests/testlog.cpp][50][这条警告应该出现]
+[ERRNO][警告级别日志器_SYNCLOGGER][2025-12-26 15:58:16][/home/ubuntu/logs/tests/testlog.cpp][51][这条错误应该出现]

@@ -1,3 +1,4 @@
+#include "../include/pch.hpp"
 #include "../include/logger.hpp"
 #include "../include/message.hpp"
 #include <sstream>

@@ -1,8 +1,17 @@
 cmake_minimum_required(VERSION 3.10)
-project(logs VERSION 1.0)
+project(logs VERSION 2.0)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
+set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG")
+
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+    cmake_policy(SET CMP0091 NEW)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
 
 include_directories(include)
 
@@ -10,6 +19,11 @@ file(GLOB HEADERS "include/*.hpp")
 file(GLOB SOURCES "src/*.cpp")
 
 add_library(mylog SHARED ${SOURCES})
+
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+    target_precompile_headers(mylog PRIVATE include/pch.hpp)
+endif()
+
 set_target_properties(mylog PROPERTIES LINKER_LANGUAGE CXX)
 
 add_executable(test_log tests/test.cpp)

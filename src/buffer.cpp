@@ -1,3 +1,4 @@
+#include "../include/pch.hpp"
 #include "../include/buffer.hpp"
 
 namespace Log

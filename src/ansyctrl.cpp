@@ -1,3 +1,4 @@
+#include "../include/pch.hpp"
 #include "../include/ansyctrl.hpp"
 
 namespace Log
