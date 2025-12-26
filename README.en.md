@@ -40,10 +40,20 @@ logs/
 │   ├── sink.hpp         # Log sinks
 │   ├── threadpool.hpp   # Thread pool
 │   └── tool.hpp         # Utility functions
+├── src/                 # Source files directory
+│   ├── ansyctrl.cpp     # Asynchronous control implementation
+│   ├── buffer.cpp       # Buffer management implementation
+│   ├── ConfigManager.cpp # Configuration management implementation
+│   ├── format.cpp       # Log formatting implementation
+│   ├── logger.cpp       # Logger core implementation
+│   ├── sink.cpp         # Log sinks implementation
+│   ├── threadpool.cpp   # Thread pool implementation
+│   └── tool.cpp         # Utility functions implementation
 ├── tests/               # Test files
 │   ├── test.cpp         # Basic tests
 │   └── testlog.cpp      # Comprehensive tests
-├── bin/                 # Build output directory
+├── bin/                 # Executable output directory
+├── lib/                 # Dynamic library output directory
 ├── build/               # Build system files
 ├── config/              # Configuration files
 ├── logs/                # Default log output directory
