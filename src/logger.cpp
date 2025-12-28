@@ -38,9 +38,7 @@ namespace Log
                  const std::string &loggername, const ACtrl::AnsyCtrl::ptr &ansyctrl)
         : Logger(value, loggertype, vsptr, fptr, loggername), _ansyctrl(ansyctrl) 
         {
-            _ansyctrl->bindcallbackf([this](const std::string &buf) {
-                AnsySink(buf);
-            });
+            _ansyctrl->bindcallbackf([this](const std::string &buf) { AnsySink(buf); });
         }
 
     void LogGer::AnsyLogger::log(const std::string &str)
