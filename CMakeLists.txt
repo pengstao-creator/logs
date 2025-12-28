@@ -1,25 +1,20 @@
 cmake_minimum_required(VERSION 3.10)
-project(LogSystem VERSION 1.0 LANGUAGES CXX)
+project(logs VERSION 1.0)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
-set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
-set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG")
+include_directories(include)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+file(GLOB TEST_FILES tests/*.cpp)
 
-file(GLOB SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-file(GLOB TEST_FILES ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp)
-
-add_library(mylog SHARED ${SRC_FILES})
-
-target_include_directories(mylog PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
+set(TEST_NAMES "")
 foreach(test_file ${TEST_FILES})
     get_filename_component(test_name ${test_file} NAME_WE)
     add_executable(${test_name} ${test_file})
-    target_link_libraries(${test_name} mylog pthread)
+    list(APPEND TEST_NAMES ${test_name})
 endforeach()
+
+set_target_properties(${TEST_NAMES} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin
+)
