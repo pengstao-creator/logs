@@ -31,7 +31,7 @@ namespace Log
     }
 
     SinkWay::RollFileSink::RollFileSink(size_t maxsize, const std::string &basefile)
-        : _size(0), _num(1), _maxsize(maxsize), _basefile(basefile)
+        : _size(0), _num(0), _maxsize(maxsize), _basefile(basefile)
     {
         if (_basefile.empty() || _basefile == Data::defaultBFile())
         {
