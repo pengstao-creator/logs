@@ -52,7 +52,7 @@ namespace Log
         std::string File::FindLatestLogFile(const std::string &baseDir, const std::string &baseName, 
                                             const std::string &extension, std::atomic<size_t> &maxNum, std::atomic<size_t> &fileSize)
         {
-            maxNum.store(1);
+            maxNum.store(0);
             fileSize.store(0);
             std::string latestFile;
             std::string pattern = baseDir + baseName + "[0-9]*_*" + extension;
